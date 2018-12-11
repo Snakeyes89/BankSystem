@@ -3,6 +3,7 @@ package pl.po.core.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Account {
     @Getter
     private double amount;
 
-    @Getter
+    @Getter @Setter
     private Currency currency;
 
     public Account(Client owner, double amount, Currency currency) {
