@@ -1,6 +1,12 @@
 package pl.po.core.services;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import pl.po.bslibs.dto.TransferDTO;
 import pl.po.core.domain.Account;
 import pl.po.core.domain.Transfer;
 import pl.po.core.repositories.TransferRepository;
@@ -10,6 +16,9 @@ import java.util.Date;
 
 @Service
 public class TransferServiceImpl implements TransferService {
+
+    @Value("${fds.service.address}")
+    private String fdsServiceAddress;
 
     private TransferRepository transferRepository;
 
@@ -75,6 +84,15 @@ public class TransferServiceImpl implements TransferService {
         final Account source = accountService.get(sourceAccountId);
         final Account destination = accountService.get(destinationAccountId);
         return new Transfer(amount, source, destination, new Date());
+    }
+
+    @Override
+    public boolean detectFraud(TransferDTO transferDTO) {
+        final RestTemplate restTemplate = new RestTemplate();
+        final HttpEntity<TransferDTO> request = new HttpEntity<>(transferDTO);
+        final ResponseEntity<String> response = restTemplate.exchange(fdsServiceAddress + "fraud/detect",
+                HttpMethod.POST, request, String.class);
+        return Boolean.getBoolean(response.getBody());
     }
 
     private boolean isSameSourceAndDestinationAccounts(Long sourceAccountId, Long destinationAccountId) {

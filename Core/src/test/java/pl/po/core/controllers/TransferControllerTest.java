@@ -9,8 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.po.bslibs.dto.TransferDTO;
+import pl.po.core.domain.Transfer;
 import pl.po.core.services.TransferService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +35,10 @@ public class TransferControllerTest {
     public void execTransferWithValidData() throws Exception {
         Mockito.when(transferService.isExecutable(sourceAccountId, destinationAccountId, amount))
                 .thenReturn(true);
+        Mockito.when(transferService.createTransfer(sourceAccountId, destinationAccountId, amount))
+                .thenReturn(new Transfer());
+        Mockito.when(transferService.detectFraud(any(TransferDTO.class))).thenReturn(false);
+        Mockito.when(transferService.execute(sourceAccountId, destinationAccountId, amount)).thenReturn(true);
 
         mockMvc.perform(post("/transfer/exec")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

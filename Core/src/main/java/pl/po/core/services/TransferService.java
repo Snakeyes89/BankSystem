@@ -1,5 +1,6 @@
 package pl.po.core.services;
 
+import pl.po.bslibs.dto.TransferDTO;
 import pl.po.core.domain.Transfer;
 
 public interface TransferService {
@@ -46,4 +47,11 @@ public interface TransferService {
      * @return new Transfer object
      */
     Transfer createTransfer(Long sourceAccountId, Long destinationAccountId, double amount);
+
+    /**
+     * Runs external series of various tests to check if transfer is in any way suspicious.
+     * @param transferDTO Transfer object mapped to TransferDTO
+     * @return true if suspicious
+     */
+    boolean detectFraud(TransferDTO transferDTO);
 }
