@@ -11,5 +11,11 @@
 
     <artifactId>fds</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>pl.po</groupId>
+            <artifactId>bslibs</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
