@@ -54,8 +54,18 @@ public class TransferServiceUnitTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void executeTransferWithZeroAmount_shouldThrowException() {
+        transferService.execute(source.getId(), destination.getId(), 0.00);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void executeTransferWithNegativeAmount_shouldThrowException() {
+        transferService.execute(source.getId(), destination.getId(), -500.00);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void executeTransferWithSameSourceAndDestinationAccounts_shouldThrowException() {
-        transferService.isExecutable(1L, 1L, 100.00);
+        transferService.execute(1L, 1L, 100.00);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -103,6 +113,16 @@ public class TransferServiceUnitTest {
     @Test
     public void isTransferExecutableWithValidData_shouldReturnTrue() {
         assertThat(transferService.isExecutable(source.getId(), destination.getId(), 100.00)).isTrue();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isTransferExecutableWithZeroAmount_shouldThrowException() {
+        transferService.isExecutable(source.getId(), destination.getId(), 0.00);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isTransferExecutableWithNegativeAmount_shouldThrowException() {
+        transferService.isExecutable(source.getId(), destination.getId(), -100.00);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -69,6 +69,9 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public boolean isExecutable(Long sourceAccountId, Long destinationAccountId, double amount) {
         final Transfer transfer = createTransfer(sourceAccountId, destinationAccountId, amount);
+        if (!isPositiveAmount(amount)) {
+            throw new IllegalArgumentException("Transfer amount must be positive.");
+        }
         if (isSameSourceAndDestinationAccounts(sourceAccountId, destinationAccountId)) {
             throw new IllegalArgumentException("Source account and destination account cannot be the same.");
         }
@@ -93,6 +96,10 @@ public class TransferServiceImpl implements TransferService {
         final ResponseEntity<String> response = restTemplate.exchange(fdsServiceAddress + "fraud/detect",
                 HttpMethod.POST, request, String.class);
         return Boolean.valueOf(response.getBody());
+    }
+
+    private boolean isPositiveAmount(double amount) {
+        return amount > 0;
     }
 
     private boolean isSameSourceAndDestinationAccounts(Long sourceAccountId, Long destinationAccountId) {
