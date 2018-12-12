@@ -13,8 +13,7 @@ import pl.po.core.domain.Client;
 import pl.po.core.domain.Transfer;
 import pl.po.core.repositories.TransferRepository;
 
-import java.util.Currency;
-import java.util.Date;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,7 +54,7 @@ public class TransferServiceUnitTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void executeTransferWithSameSourceAndDestiantionAccounts_shouldThrowException() {
+    public void executeTransferWithSameSourceAndDestinationAccounts_shouldThrowException() {
         transferService.isExecutable(1L, 1L, 100.00);
     }
 
@@ -73,6 +72,32 @@ public class TransferServiceUnitTest {
                 .thenThrow(IllegalArgumentException.class);
 
         transferService.execute(source.getId(), destination.getId(), transfer.getAmount());
+    }
+
+    @Test
+    public void numberOfExecutedTransfersByClientOnPeriodOfTimeInThePast_shouldReturnTrue() {
+        final Long clientId = 1L;
+        final int minutes = 5;
+        final Date date = new Date(System.currentTimeMillis() - (minutes * 60 * 1000));
+        List<Transfer> foundTransfers = Collections.singletonList(transfer);
+
+        Mockito.when(transferRepository.findBySourceOwnerIdAndDateGreaterThan(clientId, date))
+                .thenReturn(foundTransfers);
+
+        assertThat(transferService.executedTransfersByClientInLastMinutes(clientId, minutes)).isOne();
+    }
+
+    @Test
+    public void numberOfExecutedTransfersByClientOnPeriodOfTimeInTheFuture_shouldReturnTrue() {
+        final Long clientId = 1L;
+        final int minutes = 5;
+        final Date date = new Date(System.currentTimeMillis() + (minutes * 60 * 1000));
+        List<Transfer> foundTransfers = Collections.singletonList(transfer);
+
+        Mockito.when(transferRepository.findBySourceOwnerIdAndDateGreaterThan(clientId, date))
+                .thenReturn(foundTransfers);
+
+        assertThat(transferService.executedTransfersByClientInLastMinutes(clientId, minutes)).isZero();
     }
 
     @Test
@@ -99,5 +124,15 @@ public class TransferServiceUnitTest {
                 .thenThrow(IllegalArgumentException.class);
 
         transferService.execute(source.getId(), destination.getId(), transfer.getAmount());
+    }
+
+    @Test
+    public void createTransferWithValidData_shouldReturnTrue() {
+        final double amount = 100.00;
+        final Transfer createdTransfer = transferService.createTransfer(source.getId(), destination.getId(), amount);
+
+        assertThat(createdTransfer.getSource()).isEqualTo(transfer.getSource());
+        assertThat(createdTransfer.getDestination()).isEqualTo(transfer.getDestination());
+        assertThat(createdTransfer.getAmount()).isEqualTo(transfer.getAmount());
     }
 }

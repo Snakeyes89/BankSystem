@@ -52,6 +52,12 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    public int executedTransfersByClientInLastMinutes(Long clientId, int minutes) {
+        final Date date = new Date(System.currentTimeMillis() - (minutes * 60 * 1000));
+        return transferRepository.findBySourceOwnerIdAndDateGreaterThan(clientId, date).size();
+    }
+
+    @Override
     public boolean isExecutable(Long sourceAccountId, Long destinationAccountId, double amount) {
         final Transfer transfer = createTransfer(sourceAccountId, destinationAccountId, amount);
         if (isSameSourceAndDestinationAccounts(sourceAccountId, destinationAccountId)) {
@@ -64,7 +70,8 @@ public class TransferServiceImpl implements TransferService {
         return true;
     }
 
-    private Transfer createTransfer(Long sourceAccountId, Long destinationAccountId, double amount) {
+    @Override
+    public Transfer createTransfer(Long sourceAccountId, Long destinationAccountId, double amount) {
         final Account source = accountService.get(sourceAccountId);
         final Account destination = accountService.get(destinationAccountId);
         return new Transfer(amount, source, destination, new Date());
