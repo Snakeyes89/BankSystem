@@ -92,7 +92,7 @@ public class TransferServiceImpl implements TransferService {
         final HttpEntity<TransferDTO> request = new HttpEntity<>(transferDTO);
         final ResponseEntity<String> response = restTemplate.exchange(fdsServiceAddress + "fraud/detect",
                 HttpMethod.POST, request, String.class);
-        return Boolean.getBoolean(response.getBody());
+        return Boolean.valueOf(response.getBody());
     }
 
     private boolean isSameSourceAndDestinationAccounts(Long sourceAccountId, Long destinationAccountId) {
