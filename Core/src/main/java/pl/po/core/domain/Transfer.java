@@ -14,21 +14,20 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Transfer {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Getter @Setter
+    @Setter
     private double amount;
 
     @OneToOne
-    @Getter
     private Account source;
 
     @OneToOne
-    @Getter
     private Account destination;
 
     private Date date;

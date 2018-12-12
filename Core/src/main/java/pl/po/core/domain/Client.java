@@ -1,6 +1,7 @@
 package pl.po.core.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Client {
 
     @Id
@@ -20,17 +22,22 @@ public class Client {
     private Long id;
 
     @Size(min=3, max=20)
-    private String firstname;
+    private String firstName;
 
     @Size(min=3, max=30)
-    private String secondname;
+    private String surname;
 
     @OneToMany(mappedBy = "owner")
     private List<Account> accounts;
 
-    public Client(Long id, @Size(min = 3, max = 20) String firstname, @Size(min = 3, max = 30) String secondname) {
+    public Client(@Size(min = 3, max = 20) String firstName, @Size(min = 3, max = 30) String surname) {
+        this.firstName = firstName;
+        this.surname = surname;
+    }
+
+    public Client(Long id, @Size(min = 3, max = 20) String firstName, @Size(min = 3, max = 30) String surname) {
         this.id = id;
-        this.firstname = firstname;
-        this.secondname = secondname;
+        this.firstName = firstName;
+        this.surname = surname;
     }
 }

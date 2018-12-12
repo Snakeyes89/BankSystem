@@ -14,20 +14,19 @@ import java.util.Currency;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Account {
 
     @Id
     @GeneratedValue
-    @Getter
     private Long id;
 
     @ManyToOne
     private Client owner;
 
-    @Getter
     private double amount;
 
-    @Getter @Setter
+    @Setter
     private Currency currency;
 
     public Account(Client owner, double amount, Currency currency) {
