@@ -5,6 +5,7 @@
     <modules>
         <module>Core</module>
         <module>FDS</module>
+        <module>BSlibs</module>
     </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
